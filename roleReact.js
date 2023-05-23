@@ -7,63 +7,95 @@ const reactions = ["💻", "🖌", "😃", "🆕"];
 const botToken = ""; /*You'll have to set this yourself; read more
                      here https://github.com/reactiflux/discord-irc/wiki/Creating-a-discord-bot-&-getting-a-token*/
 
+// Load up the bot...
+const { Client, MessageReaction, Intents } = require('discord.js');
+const bot = new Client({ 
+  intents: [
+    "GUILDS",
+    "GUILD_MESSAGES", 
+    "GUILD_MEMBERS", 
+    "GUILD_MESSAGE_REACTIONS"
+  ] 
+});
+//output to confirm bot is running...
+bot.once('ready', () => {
+        console.log('Ready!');
+});
 
-//Load up the bot...
-const Discord = require('discord.js');
-const bot = new Discord.Client();
 bot.login(botToken);
 
-//If there isn't a reaction for every role, scold the user!
-if (roles.length !== reactions.length) throw "Roles list and reactions list are not the same length!";
-
-//Function to generate the role messages, based on your settings
-function generateMessages(){
-    var messages = [];
-    messages.push(initialMessage);
-    for (let role of roles) messages.push(`React below to get the **"${role}"** role!`); //DONT CHANGE THIS
-    return messages;
+// If there isn't a reaction for every role, scold the user!
+if (roles.length !== reactions.length) {
+  console.error("Roles list and reactions list are not the same length!");
+  process.exit(1); // Exit the process to prevent further execution
 }
 
+// Function to generate the role messages, based on your settings
+function generateMessages() {
+  var messages = [];
+  messages.push(initialMessage);
+  for (let role of roles) messages.push(`React below to get the **"${role}"** role!`); // DONT CHANGE THIS
+  return messages;
+}
 
-bot.on("message", message => {
-    if (message.author.id == yourID && message.content.toLowerCase() == setupCMD){
-        var toSend = generateMessages();
-        let mappedArray = [[toSend[0], false], ...toSend.slice(1).map( (message, idx) => [message, reactions[idx]])];
-        for (let mapObj of mappedArray){
-            message.channel.send(mapObj[0]).then( sent => {
-                if (mapObj[1]){
-                  sent.react(mapObj[1]);  
-                } 
-            });
-        }
-    }
-})
-
-
-bot.on('raw', event => {
-    if (event.t === 'MESSAGE_REACTION_ADD' || event.t == "MESSAGE_REACTION_REMOVE"){
-        
-        let channel = bot.channels.get(event.d.channel_id);
-        let message = channel.messages.fetch(event.d.message_id).then(msg=> {
-        let user = msg.guild.members.get(event.d.user_id);
-        
-        if (msg.author.id == bot.user.id && msg.content != initialMessage){
-       
-            var re = `\\*\\*"(.+)?(?="\\*\\*)`;
-            var role = msg.content.match(re)[1];
-        
-            if (user.id != bot.user.id){
-                var roleObj = msg.guild.roles.find('name', role);
-                var memberObj = msg.guild.members.get(user.id);
-                
-                if (event.t === "MESSAGE_REACTION_ADD"){
-                    memberObj.roles.add(roleObj)
-                } else {
-                    memberObj.roles.remove(roleObj);
-                }
-            }
-        }
-        });
- 
-    }   
+bot.on('messageCreate', (message) => {
+  if (message.content === '$printRoles') {
+    const guild = message.guild;
+    const roleList = guild.roles.cache.map((role) => `${role.name}: ${role.id}`);
+    console.log(roleList.join('\n'));
+  }
 });
+
+bot.on("messageCreate", async (message) => {
+  if (message.author.id === yourID && message.content.toLowerCase() === setupCMD) {
+    var toSend = generateMessages();
+    let mappedArray = [[toSend[0], false], ...toSend.slice(1).map((message, idx) => [message, reactions[idx]])];
+    for (let mapObj of mappedArray) {
+      try {
+        const sent = await message.channel.send({ content: mapObj[0] });
+        if (mapObj[1]) {
+          await sent.react(mapObj[1]);
+        }
+      } catch (error) {
+        console.error("Error sending message:", error);
+      }
+    }
+  }
+});
+
+bot.on('messageReactionAdd', async (reaction, user) => {
+  if (reaction.message.author.id === bot.user.id && reaction.message.content !== initialMessage) {
+    var re = `\\*\\*"(.+)?(?="\\*\\*)`;
+    var role = reaction.message.content.match(re)[1];
+
+    if (user.id !== bot.user.id) {
+      try {
+        var roleObj = reaction.message.guild.roles.cache.find((r) => r.name === role);
+        var memberObj = reaction.message.guild.members.cache.get(user.id);
+
+        await memberObj.roles.add(roleObj);
+      } catch (error) {
+        console.error("Error adding role:", error);
+      }
+    }
+  }
+});
+
+bot.on('messageReactionRemove', async (reaction, user) => {
+  if (reaction.message.author.id === bot.user.id && reaction.message.content !== initialMessage) {
+    var re = `\\*\\*"(.+)?(?="\\*\\*)`;
+    var role = reaction.message.content.match(re)[1];
+
+    if (user.id !== bot.user.id) {
+      try {
+        var roleObj = reaction.message.guild.roles.cache.find((r) => r.name === role);
+        var memberObj = reaction.message.guild.members.cache.get(user.id);
+
+        await memberObj.roles.remove(roleObj);
+      } catch (error) {
+        console.error("Error removing role:", error);
+      }
+    }
+  }
+});
+
