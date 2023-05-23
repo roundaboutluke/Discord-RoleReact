@@ -2,6 +2,8 @@
 
 A bot that automatically assigns roles based on message reactions.
 
+Updated to discord.js v13 API (npm i discord.js@^13) with output when running, error logging and a new $printRoles command to output a list of roles/role IDs in the console from the server the message is sent in as long as the bot can see the channel.
+
 ![Demo of Bot](https://i.imgur.com/5vxxCDw.gif)
 
 ## Features
