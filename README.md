@@ -62,7 +62,7 @@ If you don't have PM2 installed already
 ```sudo npm install -g pm2```
 
 While in the roleReact root folder run
-```pm2 node ReactMap.js --name Roles```
+```pm2 node roleReact.js --name Roles```
 
 Then you can use the following commands to restart, stop and start the bot.
 ```pm2 restart Roles
