@@ -2,7 +2,7 @@
 
 A bot that automatically assigns roles based on message reactions.
 
-Built on discord.js v13 API (npm i discord.js@^13)
+Built on discord.js v13 API (npm i discord.js@^13) and tested on Node v18.16.0.
 
 ![Demo of Bot](https://i.imgur.com/5vxxCDw.gif)
 
