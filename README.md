@@ -2,7 +2,7 @@
 
 A bot that automatically assigns roles based on message reactions.
 
-Updated to discord.js v13 API (npm i discord.js@^13) with output when running, error logging and a new $printRoles command to output a list of roles/role IDs in the console from the server the message is sent in as long as the bot can see the channel.
+Built on discord.js v13 API (npm i discord.js@^13)
 
 ![Demo of Bot](https://i.imgur.com/5vxxCDw.gif)
 
@@ -13,6 +13,8 @@ Updated to discord.js v13 API (npm i discord.js@^13) with output when running, e
 - Auto-removes role when user removes a reaction
 
 - Retains channel/message/reaction on restart
+
+- Prints Roles and Role ID's in console
 
 ## Installation
 
@@ -50,7 +52,7 @@ For the bot to work properly, you must:
 
 ## Starting the bot
 
-in the console run ```//node roleReact.js```
+in the console while in the roleReact root folder run ```node roleReact.js```
 
 ## Auto Start (Optional)
 
@@ -59,8 +61,13 @@ This will quickly add ReactMap to your PM2 processes
 If you don't have PM2 installed already
 ```sudo npm install -g pm2```
 
-While in the roleReact root foler
-```pm2 node ReactMap.js```
+While in the roleReact root folder run
+```pm2 node ReactMap.js --name Roles```
+
+Then you can use the following commands to restart, stop and start the bot.
+```pm2 restart Roles
+pm2 stop Roles
+pm2 start Roles```
 
 ## Conclusion 
 
