@@ -12,6 +12,8 @@ Updated to discord.js v13 API (npm i discord.js@^13) with output when running, e
 
 - Auto-removes role when user removes a reaction
 
+- Retains channel/message/reaction on restart
+
 ## Installation
 
 Clone this repository to your local machine.
@@ -21,6 +23,7 @@ Open `roleReact.js`, you will need to change most of the settings at the top of 
 ```JavaScript
 //Settings!
 const yourID = ""; //Instructions on how to get this: https://redd.it/40zgse
+const storageFile = './roleMessages.json';
 const setupCMD = "!createroleressage"
 let initialMessage = `**React to the messages below to receive the associated role. If you would like to remove the role, simply remove your reaction!**`;
 const roles = ["Hacker", "Artist", "Public Relations", "Intern"];
@@ -36,6 +39,8 @@ For the bot to work properly, you must:
 - Adjust the setup command, if you do not like the default one
 
 - Adjust the initial message, if you do not like the default one
+
+- Adjust the JSON storage file location, if you do not like the default one
 
 - Adjust the roles to ones that are actually in your server; **make sure the bot's role is high enough on the list in your server's settings that it can assign the them properly**.
 
