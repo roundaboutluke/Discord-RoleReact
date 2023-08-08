@@ -56,7 +56,7 @@ in the console while in the roleReact root folder run ```node roleReact.js```
 
 ## Auto Start (Optional)
 
-This will quickly add ReactMap to your PM2 processes
+This will quickly add roleReact to your PM2 processes
 
 If you don't have PM2 installed already
 ```sudo npm install -g pm2```
